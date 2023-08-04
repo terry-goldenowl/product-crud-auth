@@ -1,6 +1,6 @@
 ## Features
 
-- CRUD Products (Fields: Id, Name, Image URL, Description)
+- CRUD Products (Fields: Id, Name, Price, Image URL, Description)
 - Search products
 - Pagination (can choose the number of products shown per page)
 - Authentication (Login, Register, Logout)
