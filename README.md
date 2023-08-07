@@ -4,6 +4,7 @@
 - Search products
 - Pagination (can choose the number of products shown per page)
 - Authentication (Login, Register, Logout)
+- Authorization (laravel-permission)
 
 ## How to run
 
