@@ -8,13 +8,23 @@
             <button class="btn btn-primary" id="createProductBtn">Create new product</button>
         </div>
 
-        {{-- Message --}}
+        {{-- Display successful or error messages --}}
         @if (session('success'))
             <div class="alert alert-success" role="alert">{{ session('success') }} </div>
         @endif
 
-        @if ($errors->has('error'))
-            <div class="alert alert-danger" role="alert"> {{ $errors->first('error') }} </div>
+        @if (count($errors) > 0)
+            <div class="alert alert-danger" role="alert">
+                <p class="mb-sm-2">Errors:</p>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li class="mb-0">
+                            {{ $error }}
+                        </li>
+                    @endforeach
+                </ul>
+
+            </div>
         @endif
 
         {{-- Render table of products --}}
@@ -62,5 +72,5 @@
 
 @push('scripts')
     {{ $html->scripts() }}
-    <script src="{{ asset('js/updateProduct.js') }}"></script>
+    <script src="{{ asset('js/products.js') }}"></script>
 @endpush

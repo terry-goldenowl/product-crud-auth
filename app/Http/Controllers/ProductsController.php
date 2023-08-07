@@ -6,34 +6,53 @@ use App\Models\Product;
 use App\Services\ProductService;
 use GuzzleHttp\Handler\Proxy;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Yajra\DataTables\Html\Builder;
 
 class ProductsController extends Controller
 {
+    private function filterProducts($query)
+    {
+        if (request()->has('name')) {
+            $query->where('name', 'like', request('name') . "%");
+        }
+        if (request()->has('description')) {
+            $query->where('description', 'like', request('description') . "%");
+        }
+    }
+
     public function index(Builder $builder)
     {
         if (request()->ajax()) {
-            $editBtn = "<button class='edit btn-primary btn btn-sm update-btn'>Edit</button>";
-            $deleteBtn = "<button class='delete btn-danger btn btn-sm delete-btn'>Delete</button>";
-
             $products = ProductService::index();
             if ($products) {
-                return DataTables::of($products)->addColumn('actions', $editBtn . " " . $deleteBtn)->rawColumns(['actions'])->toJson();
+                if (Auth::user()->can('update product') && Auth::user()->can('delete product')) {
+                    $editBtn = "<button class='edit btn-primary btn btn-sm update-btn'>Edit</button>";
+                    $deleteBtn = "<button class='delete btn-danger btn btn-sm delete-btn'>Delete</button>";
+                    return DataTables::of($products)->addColumn('actions', $editBtn . " " . $deleteBtn)->rawColumns(['actions'])->toJson();
+                } else {
+                    return DataTables::of($products)->toJson();
+                }
             }
         }
 
-        $html = $builder->columns([
+        $columns = [
             ['data' => 'id', 'title' => 'Id'],
             ['data' => 'name', 'title' => 'Name'],
             ['data' => 'price', 'title' => 'Price'],
             ['data' => 'image', 'title' => 'Image URL'],
-            ['data' => 'description', 'title' => 'Description'],
-            ['data' => 'actions', 'title' => 'Actions', 'orderable' => false, 'searchable' => false]
-        ])->parameters([
-            'paging' => true,
-            'searching' => true
-        ]);
+            ['data' => 'description', 'title' => 'Description']
+        ];
+        if (Auth::user()->can('update product') && Auth::user()->can('delete product')) {
+            array_push($columns, ['data' => 'actions', 'title' => 'Actions', 'orderable' => false, 'searchable' => false]);
+        }
+
+        $html = $builder->columns($columns);
+        // ->parameters([
+        //     'paging' => true,
+        //     'searching' => true
+        // ]);
 
         return view('products.index', compact('html'));
     }
@@ -51,7 +70,7 @@ class ProductsController extends Controller
             return back()->withErrors('error', "Something went wrong when creating new product!");
         }
 
-        return back()->with('success', "Create product successfully");
+        return back()->with('success', "Create product successfully (Product Id: $newProduct->id).");
     }
 
     public function update(Request $request, $id)
