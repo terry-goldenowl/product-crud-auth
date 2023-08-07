@@ -12,16 +12,6 @@ use Yajra\DataTables\Html\Builder;
 
 class ProductsController extends Controller
 {
-    private function filterProducts($query)
-    {
-        if (request()->has('name')) {
-            $query->where('name', 'like', request('name') . "%");
-        }
-        if (request()->has('description')) {
-            $query->where('description', 'like', request('description') . "%");
-        }
-    }
-
     public function index(Builder $builder)
     {
         if (request()->ajax()) {
