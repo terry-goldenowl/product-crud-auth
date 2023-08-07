@@ -26,13 +26,30 @@ class ProductsController extends Controller
     {
         if (request()->ajax()) {
             $products = ProductService::index();
+
+            // Products after searching
+            $productsSearched = DataTables::eloquent($products)
+                ->filterColumn('name', function ($query, $keyword) {
+                    $sql = "products.name like ?";
+                    $query->whereRaw($sql, ["$keyword%"]);
+                })
+                ->filterColumn('description', function ($query, $keyword) {
+                    $sql = "products.description like ?";
+                    $query->whereRaw($sql, ["$keyword%"]);
+                });
+
             if ($products) {
+                // when user have access
                 if (Auth::user()->can('update product') && Auth::user()->can('delete product')) {
                     $editBtn = "<button class='edit btn-primary btn btn-sm update-btn'>Edit</button>";
                     $deleteBtn = "<button class='delete btn-danger btn btn-sm delete-btn'>Delete</button>";
-                    return DataTables::of($products)->addColumn('actions', $editBtn . " " . $deleteBtn)->rawColumns(['actions'])->toJson();
+
+                    return $productsSearched
+                        ->addColumn('actions', $editBtn . " " . $deleteBtn)->rawColumns(['actions'])
+                        ->toJson();
+                    // when users dont have accress
                 } else {
-                    return DataTables::of($products)->toJson();
+                    return $productsSearched->toJson();
                 }
             }
         }
