@@ -17,7 +17,7 @@ class ProductsController extends Controller
         if (request()->ajax()) {
             $products = ProductService::index();
 
-            // Products after searching
+            // Products after searchings
             $productsSearched = DataTables::eloquent($products)
                 ->filterColumn('name', function ($query, $keyword) {
                     $sql = "products.name like ?";
