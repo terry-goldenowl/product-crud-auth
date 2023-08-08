@@ -4,9 +4,11 @@
     <div class="container">
 
         {{-- Add new product button --}}
-        <div class="d-flex justify-content-end mb-2">
-            <button class="btn btn-primary" id="createProductBtn">Create new product</button>
-        </div>
+        @can('create product')
+            <div class="d-flex justify-content-end mb-2">
+                <button class="btn btn-primary" id="createProductBtn">Create new product</button>
+            </div>
+        @endcan
 
         {{-- Display successful or error messages --}}
         @if (session('success'))

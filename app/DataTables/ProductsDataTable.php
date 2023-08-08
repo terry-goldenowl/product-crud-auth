@@ -19,6 +19,10 @@ class ProductsDataTable extends DataTable
      *
      * @param QueryBuilder $query Results from query() method.
      */
+    protected $paginationOptions = [
+        'lengthMenu' => [10, 20, 50, 100]
+    ];
+
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))

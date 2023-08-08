@@ -57,9 +57,11 @@
                             <li class="nav-item flex align-items-center">
                                 <a class="nav-link" href="{{ route('products.index') }}">Product list</a>
                             </li>
-                            <li class="nav-item flex align-items-center">
-                                <a class="nav-link" href="{{ route('users.roles') }}">Roles & Permissions</a>
-                            </li>
+                            @canany(['get users', 'get roles', 'get permissions'])
+                                <li class="nav-item flex align-items-center">
+                                    <a class="nav-link" href="{{ route('users.roles') }}">Roles & Permissions</a>
+                                </li>
+                            @endcanany
                             <li class="nav-item">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
