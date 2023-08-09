@@ -52,6 +52,6 @@ class UsersController extends Controller
         if ($isDeleted) {
             return back()->with('success', 'User deleted successfully!');
         }
-        return back()->withErrors(['error' => 'Fail to delete user!']);
+        return back()->withErrors(['error' => 'Fail to delete user or user not found!']);
     }
 }
