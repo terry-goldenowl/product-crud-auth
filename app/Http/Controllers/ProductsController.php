@@ -102,7 +102,7 @@ class ProductsController extends Controller
     {
         $isDeleted = ProductService::delete($id);
         if ($isDeleted == 0) {
-            return back()->withErrors(['error' => "Something went wrong when deleting product!"]);
+            return back()->withErrors(['error' => "Something went wrong when deleting product or product not found!"]);
         }
 
         return back()->with('success', "Delete product $id successfully");
