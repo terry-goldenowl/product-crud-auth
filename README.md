@@ -5,6 +5,7 @@
 - Pagination (can choose the number of products shown per page)
 - Authentication (Login, Register, Logout)
 - Authorization (laravel-permission)
+- Unit tests
 
 ## How to run
 
