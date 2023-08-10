@@ -26,7 +26,6 @@
                 <td>Id</td>
                 <td>Name</td>
                 <td>Roles</td>
-                <td>Actions</td>
             </tr>
         </thead>
         <tbody>
@@ -41,24 +40,24 @@
                             @endforeach
                         @endif
                     </td>
-                    <td class="d-flex">
+                    {{-- <td class="d-flex">
                         <form action="{{ route('delete-permission', ['id' => $permission->id]) }}" method="post">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>
-                    </td>
+                    </td> --}}
                 </tr>
             @endforeach
         </tbody>
     </table>
 
-    <div class="text-end">
+    {{-- <div class="text-end">
         <button class="btn btn-primary" id="addPermissionBtn">Add permission</button>
-    </div>
+    </div> --}}
 
     {{-- Add role modal --}}
-    <div class="modal fade" id="addPermissionModal" tabindex="-1" role="dialog">
+    {{-- <div class="modal fade" id="addPermissionModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <form class="modal-content" id="addPermissionForm" method="POST">
                 @csrf
@@ -67,7 +66,7 @@
                     <h5 class="modal-title" id="exampleModalLabel">
                         Add permission
                     </h5>
-                    <button type="button" class="btn" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true" class="fs-4">&times;</span>
                     </button>
                 </div>
@@ -79,14 +78,14 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">
                         Add permission
                     </button>
                 </div>
             </form>
         </div>
-    </div>
+    </div> --}}
 @endsection
 
 @push('scripts')

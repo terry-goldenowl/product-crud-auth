@@ -2,20 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Services\ProductService;
-use GuzzleHttp\Handler\Proxy;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Yajra\DataTables\Html\Builder;
 
 class ProductsController extends Controller
 {
+    public $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+
     public function index(Builder $builder)
     {
         if (request()->ajax()) {
-            $products = ProductService::index();
+            $products = $this->productService->index();
 
             // Products after searchings
             $productsSearched = DataTables::eloquent($products)
@@ -30,12 +35,13 @@ class ProductsController extends Controller
 
             if ($products) {
                 // when user have access
-                if (Auth::user()->can('update product') && Auth::user()->can('delete product')) {
-                    $editBtn = "<button class='edit btn-primary btn btn-sm update-btn'>Edit</button>";
+                if ($this->getUser()->can('update product') && $this->getUser()->can('delete product')) {
+                    $editBtn = "<button class='edit btn-primary btn btn-sm update-btn me-1'>Edit</button>";
                     $deleteBtn = "<button class='delete btn-danger btn btn-sm delete-btn'>Delete</button>";
+                    $actionsDiv = "<div class='d-flex'>$editBtn$deleteBtn</div>";
 
                     return $productsSearched
-                        ->addColumn('actions', $editBtn . " " . $deleteBtn)->rawColumns(['actions'])
+                        ->addColumn('actions', $actionsDiv)->rawColumns(['actions'])
                         ->toJson();
                     // when users dont have accress
                 } else {
@@ -48,10 +54,10 @@ class ProductsController extends Controller
             ['data' => 'id', 'title' => 'Id'],
             ['data' => 'name', 'title' => 'Name'],
             ['data' => 'price', 'title' => 'Price'],
-            ['data' => 'image', 'title' => 'Image URL'],
+            ['data' => 'image', 'title' => 'Image URL', 'searchable' => false],
             ['data' => 'description', 'title' => 'Description']
         ];
-        if (Auth::user()->can('update product') && Auth::user()->can('delete product')) {
+        if ($this->getUser()->can('update product') && $this->getUser()->can('delete product')) {
             array_push($columns, ['data' => 'actions', 'title' => 'Actions', 'orderable' => false, 'searchable' => false]);
         }
 
@@ -64,7 +70,7 @@ class ProductsController extends Controller
         return view('products.index', compact('html'));
     }
 
-    public function create(Request $request)
+    public function create(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'unique:products', 'max:200'],
@@ -72,7 +78,7 @@ class ProductsController extends Controller
             'image' => ['required'],
         ]);
 
-        $newProduct = ProductService::create($request->except('_token', '_method'));
+        $newProduct = $this->productService->create($request->except('_token', '_method'));
         if (!$newProduct) {
             return back()->withErrors('error', "Something went wrong when creating new product!");
         }
@@ -80,7 +86,7 @@ class ProductsController extends Controller
         return back()->with('success', "Create product successfully (Product Id: $newProduct->id).");
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id): RedirectResponse
     {
         $validated = $request->validate([
             'name' => ['required', 'string'],
@@ -90,7 +96,7 @@ class ProductsController extends Controller
 
         // dd($validated);
 
-        $updatedProduct = ProductService::update($request->all(), $id);
+        $updatedProduct = $this->productService->update($request->all(), $id);
         if (!$updatedProduct) {
             return back()->withErrors('error', "Something went wrong when updating product!");
         }
@@ -98,10 +104,10 @@ class ProductsController extends Controller
         return back()->with('success', "Update product $id successfully");
     }
 
-    public function delete(Request $request, $id)
+    public function delete(Request $request, int $id): RedirectResponse
     {
-        $isDeleted = ProductService::delete($id);
-        if ($isDeleted == 0) {
+        $isDeleted = $this->productService->delete($id);
+        if (!!!$isDeleted) {
             return back()->withErrors(['error' => "Something went wrong when deleting product or product not found!"]);
         }
 

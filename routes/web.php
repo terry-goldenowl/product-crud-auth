@@ -28,7 +28,6 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::middleware('guest')->group(function () {
     Route::get("/login", [AuthController::class, 'showLogin'])->name("show-login");
@@ -39,30 +38,33 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
 
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::any("/logout", [AuthController::class, 'logout'])->name('logout');
     Route::get('/products', [ProductsController::class, 'index'])->name('products.index');
 
-    Route::group(['middleware' => ['role:admin']], function () {
-        // Products
-        Route::post('/products', [ProductsController::class, 'create'])->name('products.create');
-        Route::patch('/products/{id}', [ProductsController::class, 'update'])->name('products.update');
-        Route::delete('/products/{id}', [ProductsController::class, 'delete'])->name('products.delete');
+    // Route::group(['middleware' => ['role:admin']], function () {
+    // Products
 
-        // Users
-        Route::get('/users', [UsersController::class, 'index'])->name('users.index');
-        Route::delete('/users/{id}', [UsersController::class, 'deleteUser'])->name('users.delete');
-        Route::post('/users/{id}/assign-roles', [UsersController::class, 'assignRoles'])->name('users.roles.assign');
+    Route::post('/products', [ProductsController::class, 'create'])->name('products.create');
+    Route::patch('/products/{id}', [ProductsController::class, 'update'])->name('products.update');
+    Route::delete('/products/{id}', [ProductsController::class, 'delete'])->name('products.delete');
 
-        // Roles
-        Route::get('/users-roles', [UsersController::class, 'indexRoles'])->name('users.index-roles');
-        Route::get('/users/roles', [RolesController::class, 'getRoles'])->name('users.roles');
-        Route::post('/users/roles', [RolesController::class, 'createRole'])->name('create-role');
-        Route::delete('/users/roles/{id}', [RolesController::class, 'deleteRole'])->name('delete-role');
-        Route::post('/users/roles/{id}', [RolesController::class, 'addPermissionsToRole'])->name('add-permissions-to-role');
+    // Users
+    Route::get('/users', [UsersController::class, 'index'])->name('users.index');
+    Route::delete('/users/{id}', [UsersController::class, 'deleteUser'])->name('users.delete');
+    Route::post('/users/{id}/assign-roles', [UsersController::class, 'assignRoles'])->name('users.roles.assign');
+    Route::post('/users/{id}/give-permissions', [UsersController::class, 'givePermissions'])->name('users.permissions.give');
 
-        // Permissions
-        Route::get('/users/permissions', [PermissionsController::class, 'getPermissions'])->name('users.permissions');
-        Route::post('/users/permissions', [PermissionsController::class, 'createPermission'])->name('create-permission');
-        Route::delete('/users/permissions/{id}', [PermissionsController::class, 'deletePermission'])->name('delete-permission');
-    });
+    // Roles
+    Route::get('/users-roles', [UsersController::class, 'indexRoles'])->name('users.index-roles');
+    Route::get('/users/roles', [RolesController::class, 'getRoles'])->name('users.roles');
+    Route::post('/users/roles', [RolesController::class, 'createRole'])->name('create-role');
+    Route::delete('/users/roles/{id}', [RolesController::class, 'deleteRole'])->name('delete-role');
+    Route::post('/users/roles/{id}', [RolesController::class, 'addPermissionsToRole'])->name('add-permissions-to-role');
+
+    // Permissions
+    Route::get('/users/permissions', [PermissionsController::class, 'getPermissions'])->name('users.permissions');
+    // Route::post('/users/permissions', [PermissionsController::class, 'createPermission'])->name('create-permission');
+    // Route::delete('/users/permissions/{id}', [PermissionsController::class, 'deletePermission'])->name('delete-permission');
+    // });
 });

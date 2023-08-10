@@ -7,7 +7,7 @@ use Spatie\Permission\Models\Role;
 
 class RoleService
 {
-    public static function createRole(string $role)
+    public function createRole(string $role): Role
     {
         try {
             if (!Role::where('name', $role)->exists()) {
@@ -20,7 +20,7 @@ class RoleService
         }
     }
 
-    public static function getRoles()
+    public function getRoles()
     {
         try {
             return Role::all();
@@ -30,7 +30,7 @@ class RoleService
         }
     }
 
-    public static function addPermissionToRole(int $roleId, int $permissionId)
+    public function addPermissionToRole(int $roleId, int $permissionId): void
     {
         $role = Role::findOrFail($roleId);
         $permission = Permission::findOrFail($permissionId);
@@ -39,7 +39,7 @@ class RoleService
         }
     }
 
-    public static function getRole(int $roleId)
+    public function getRole(int $roleId): Role
     {
         try {
             return Role::findById($roleId);
@@ -49,7 +49,7 @@ class RoleService
         }
     }
 
-    public static function deleteRole(int $roleId)
+    public function deleteRole(int $roleId)
     {
         try {
             // Remove all permission assigned to role

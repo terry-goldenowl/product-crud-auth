@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules;
 
 class AuthController extends Controller
@@ -25,11 +26,15 @@ class AuthController extends Controller
     public function register(Request $request): RedirectResponse
     {
         // dd($request);
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             "name" => ['required', 'string', 'max:50'],
             "email" => ['required', 'string', 'email', 'unique:' . User::class],
             "password" => ['required', 'confirmed', 'min:8', 'max:30', Rules\Password::defaults()]
         ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -45,11 +50,16 @@ class AuthController extends Controller
 
     public function login(Request $request): RedirectResponse
     {
-        // dd($request);
-        $credentials = $request->validate([
+        $credentials = $request->only('email', 'password');
+
+        $validator = Validator::make($credentials, [
             "email" => ['required', 'string', 'email'],
             "password" => ['required', 'min:8', 'max:30']
         ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
 
         // Remember me!
         $remember = $request->has("remember");
@@ -58,7 +68,7 @@ class AuthController extends Controller
             return to_route('home');
         }
 
-        return back()->withErrors(['message' => 'These credentials do not match any user!']);
+        return back()->withErrors(['message' => 'These credentials do not match any user!'])->withInput();
     }
 
     public function logout(Request $request): RedirectResponse

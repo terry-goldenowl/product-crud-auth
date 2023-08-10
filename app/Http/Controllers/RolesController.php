@@ -6,15 +6,25 @@ use App\Services\PermissionService;
 use App\Services\RoleService;
 use App\Services\UserService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class RolesController extends Controller
 {
-    public function createRole(Request $request)
+    public $roleService;
+    public $permissionService;
+
+    public function __construct(RoleService $roleService, PermissionService $permissionService)
+    {
+        $this->roleService = $roleService;
+        $this->permissionService = $permissionService;
+    }
+
+    public function createRole(Request $request): RedirectResponse
     {
         $request->validate(['name' => ['string', 'required', Rule::unique('roles')]]);
-        $newRole = RoleService::createRole(strtolower($request->name));
+        $newRole = $this->roleService->createRole(strtolower($request->name));
 
         if ($newRole) {
             return back()->with('success', "Role $newRole->name is created!");
@@ -25,17 +35,17 @@ class RolesController extends Controller
 
     public function getRoles(): View
     {
-        $roles = RoleService::getRoles();
-        $permissions = PermissionService::getPermissions();
+        $roles = $this->roleService->getRoles();
+        $permissions = $this->permissionService->getPermissions();
         return view('users.roles-index', ['roles' => $roles, 'permissions' => $permissions]);
     }
 
-    public function addPermissionsToRole(Request $request, $roleId)
+    public function addPermissionsToRole(Request $request, int $roleId): RedirectResponse
     {
         // dd($roleId);
         if (isset($request->permissions)) {
             foreach ($request->permissions as $permissionId) {
-                RoleService::addPermissionToRole($roleId, $permissionId);
+                $this->roleService->addPermissionToRole($roleId, $permissionId);
             }
             return back()->with('success', "Add permissions successfully!");
         } else {
@@ -43,9 +53,9 @@ class RolesController extends Controller
         }
     }
 
-    public function deleteRole(Request $request, $roleId)
+    public function deleteRole(Request $request, int $roleId): RedirectResponse
     {
-        $isDeleted = RoleService::deleteRole($roleId);
+        $isDeleted = $this->roleService->deleteRole($roleId);
 
         if ($isDeleted) {
             return back()->with('success', 'Delete role successfully!');

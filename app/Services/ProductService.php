@@ -6,7 +6,7 @@ use App\Models\Product;
 
 class ProductService
 {
-    public static function index()
+    public function index()
     {
         try {
             return Product::query();
@@ -16,7 +16,7 @@ class ProductService
         }
     }
 
-    public static function create($data)
+    public function create(array $data): Product
     {
         try {
             $newProduct = Product::create($data);
@@ -27,7 +27,7 @@ class ProductService
         }
     }
 
-    public static function update($data, $id)
+    public function update(array $data, int $id): Product
     {
         try {
             $product = Product::where('id', $id)->first();
@@ -42,10 +42,12 @@ class ProductService
         }
     }
 
-    public static function delete($id)
+    public function delete(int $id): bool
     {
         try {
-            return Product::destroy($id);
+            $delete = Product::destroy($id);
+            $output = $delete == 0 ? true : false;
+            return $output;
         } catch (\Throwable $th) {
             //throw $th;
             return false;

@@ -6,7 +6,7 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionService
 {
-    public static function createPermission(string $permission)
+    public function createPermission(string $permission): Permission
     {
         try {
             if (!Permission::where('name', $permission)->exists()) {
@@ -19,7 +19,7 @@ class PermissionService
         }
     }
 
-    public static function getPermissions()
+    public function getPermissions()
     {
         try {
             return Permission::all();
@@ -28,13 +28,23 @@ class PermissionService
         }
     }
 
-    public static function deletePermission(int $permissionId)
+    public function deletePermission(int $permissionId): bool
     {
         try {
             // Destroy permission
             return Permission::destroy([$permissionId]);
         } catch (\Throwable $th) {
             //throw $th;
+        }
+    }
+
+    public function getPermission(int $permissionId): Permission
+    {
+        try {
+            return Permission::findById($permissionId);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return null;
         }
     }
 }

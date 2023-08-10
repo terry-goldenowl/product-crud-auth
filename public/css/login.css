@@ -1,0 +1,35 @@
+.form-control.parsley-error {
+    border: 1px solid red;
+    background-color: rgb(255, 234, 234);
+}
+
+.parsley-errors-list {
+    list-style: none;
+}
+
+.parsley-errors-list > li {
+    color: red;
+    text-align: end;
+    font-style: italic;
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+
+.form-control.parsley-success {
+    border: 1px solid rgb(0, 182, 0);
+}
+
+#registerDiv,
+#loginDiv {
+    background: #74ebd5; /* fallback for old browsers */
+    background: -webkit-linear-gradient(
+        to right,
+        #acb6e5,
+        #74ebd5
+    ); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+        to right,
+        #acb6e5,
+        #74ebd5
+    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}

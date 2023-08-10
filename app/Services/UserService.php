@@ -6,12 +6,12 @@ use App\Models\User;
 
 class UserService
 {
-    public static function getUsers()
+    public function getUsers()
     {
         return User::where('active', 1);
     }
 
-    public static function assignRole(int $userId, array $roles)
+    public function assignRole(int $userId, array $roles): void
     {
         $user = User::findOrFail($userId);
         if ($user) {
@@ -19,7 +19,7 @@ class UserService
         }
     }
 
-    public static function removeRoles(int $userId)
+    public function removeRoles(int $userId): void
     {
         try {
             $user = User::findOrFail($userId);
@@ -31,7 +31,27 @@ class UserService
         }
     }
 
-    public static function deleteUser(int $userId)
+    public function givePermissions(int $userId, array $permissions): void
+    {
+        $user = User::findOrFail($userId);
+        if ($user) {
+            $user->syncPermissions($permissions);
+        }
+    }
+
+    public function removePermissions(int $userId): void
+    {
+        try {
+            $user = User::findOrFail($userId);
+            if ($user) {
+                $user->syncPermissions([]);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function deleteUser(int $userId): bool
     {
         try {
             $user =  User::find($userId);

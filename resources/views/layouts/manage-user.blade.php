@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="d-flex ms-auto me-auto" style="width: 60%">
+    <div class="d-flex ms-auto me-auto" style="width: 70%">
         <div class="" style="width: 20%">
             <ul class="list-unstyled">
                 <li class="mb-2"><a

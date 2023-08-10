@@ -57,7 +57,7 @@
                                         <h5 class="modal-title" id="exampleModalLabel">
                                             Choose permissions
                                         </h5>
-                                        <button type="button" class="btn" data-dismiss="modal" aria-label="Close">
+                                        <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true" class="fs-4">&times;</span>
                                         </button>
                                     </div>
@@ -76,7 +76,8 @@
                                         @endforeach
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
                                         <button type="submit" class="btn btn-primary">
                                             Done
                                         </button>
@@ -109,7 +110,7 @@
                     <h5 class="modal-title" id="exampleModalLabel">
                         Add role
                     </h5>
-                    <button type="button" class="btn" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true" class="fs-4">&times;</span>
                     </button>
                 </div>
@@ -121,7 +122,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">
                         Add role
                     </button>

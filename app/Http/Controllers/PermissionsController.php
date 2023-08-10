@@ -3,25 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Services\PermissionService;
+use App\Services\PermissionServiceRedis;
 use App\Services\RoleService;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class PermissionsController extends Controller
 {
+    public $permissionService;
+    public $roleService;
 
-    public function getPermissions()
+    public function __construct(PermissionService $permissionService, RoleService $roleService)
     {
-        $permissions = PermissionService::getPermissions();
-        $roles = RoleService::getRoles();
+        $this->permissionService = $permissionService;
+        $this->roleService = $roleService;
+    }
+
+    public function getPermissions(): View
+    {
+        $permissions = $this->permissionService->getPermissions();
+        $roles = $this->roleService->getRoles();
 
         return view('users.permissions-index', ['permissions' => $permissions, 'roles' => $roles]);
     }
 
-    public function createPermission(Request $request)
+    public function createPermission(Request $request): RedirectResponse
     {
         $request->validate(['name' => ['string', 'required', Rule::unique('roles')]]);
-        $newPermission = PermissionService::createPermission(strtolower($request->name));
+        $newPermission = $this->permissionService->createPermission(strtolower($request->name));
 
         if ($newPermission) {
             return back()->with('success', "Permission $newPermission->name is created!");
@@ -30,9 +41,9 @@ class PermissionsController extends Controller
         }
     }
 
-    public function deletePermission(Request $request, $permissionId)
+    public function deletePermission(Request $request, int $permissionId): RedirectResponse
     {
-        $isDeleted = PermissionService::deletePermission($permissionId);
+        $isDeleted = $this->permissionService->deletePermission($permissionId);
 
         if ($isDeleted) {
             return back()->with('success', 'Delete permission successfully!');
